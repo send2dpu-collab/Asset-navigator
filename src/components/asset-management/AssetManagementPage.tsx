@@ -168,7 +168,7 @@ export function AssetManagementPage() {
         {/* Assets Tab */}
         <TabsContent value="assets" className="flex-1 flex overflow-hidden m-0 p-0">
           {/* Left Panel - Group Tree */}
-          <div className="w-72 h-full border-r border-border bg-card flex-shrink-0">
+          <div className="w-72 border-r border-border bg-card flex-shrink-0 flex flex-col">
             <GroupTreeNavigation
               groups={mockAssetGroups}
               selectedGroupId={selectedGroupId}
@@ -246,13 +246,14 @@ export function AssetManagementPage() {
         {/* Host Groups Tab */}
         <TabsContent value="groups" className="flex-1 flex overflow-hidden m-0 p-0">
           {/* Left Panel - Group Tree */}
-          <div className="w-72 h-full border-r border-border bg-card flex-shrink-0">
+          <div className="w-72 border-r border-border bg-card flex-shrink-0 flex flex-col">
             <GroupTreeNavigation
               groups={mockAssetGroups}
               selectedGroupId={selectedGroupId}
               onSelectGroup={(id) => {
                 setSelectedGroupId(id);
                 if (id) setPanelMode('group');
+                else setPanelMode(null);
               }}
               onCreateGroup={handleCreateGroup}
               onEditGroup={handleEditGroup}
@@ -261,27 +262,34 @@ export function AssetManagementPage() {
           </div>
 
           {/* Main Content - Group Details or Create Form */}
-          <div className="flex-1 overflow-auto p-6">
+          <div className="flex-1 flex flex-col overflow-hidden">
             {panelMode === 'new-group' ? (
-              <div className="max-w-3xl">
-                <GroupDetailsPanel
-                  group={null}
-                  isNew
-                  onClose={handleClosePanel}
-                  onSave={handleSaveGroup}
-                />
+              <div className="flex-1 overflow-auto p-6">
+                <div className="max-w-3xl">
+                  <GroupDetailsPanel
+                    group={null}
+                    isNew
+                    onClose={handleClosePanel}
+                    onSave={handleSaveGroup}
+                  />
+                </div>
               </div>
             ) : selectedGroup ? (
-              <div className="max-w-3xl">
-                <GroupDetailsPanel
-                  group={selectedGroup}
-                  onClose={() => setSelectedGroupId(null)}
-                  onSave={handleSaveGroup}
-                  onDelete={() => console.log('Delete group')}
-                />
+              <div className="flex-1 overflow-auto p-6">
+                <div className="max-w-3xl">
+                  <GroupDetailsPanel
+                    group={selectedGroup}
+                    onClose={() => {
+                      setSelectedGroupId(null);
+                      setPanelMode(null);
+                    }}
+                    onSave={handleSaveGroup}
+                    onDelete={() => console.log('Delete group')}
+                  />
+                </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+              <div className="flex flex-col items-center justify-center flex-1 text-muted-foreground p-6">
                 <Network className="w-16 h-16 mb-4 opacity-30" />
                 <p className="text-lg font-medium">Select a Group</p>
                 <p className="text-sm text-center mt-2">
@@ -296,46 +304,50 @@ export function AssetManagementPage() {
         </TabsContent>
 
         {/* Network Localities Tab */}
-        <TabsContent value="localities" className="flex-1 overflow-auto m-0 p-0">
-          <div className="max-w-4xl mx-auto p-6">
-            <NetworkLocalitiesPanel
-              localities={mockNetworkLocalities}
-              onAdd={() => console.log('Add locality')}
-              onEdit={(l) => console.log('Edit locality:', l)}
-              onDelete={(id) => console.log('Delete locality:', id)}
-            />
+        <TabsContent value="localities" className="flex-1 flex flex-col overflow-hidden m-0 p-0">
+          <div className="flex-1 overflow-auto">
+            <div className="max-w-4xl mx-auto p-6">
+              <NetworkLocalitiesPanel
+                localities={mockNetworkLocalities}
+                onAdd={() => console.log('Add locality')}
+                onEdit={(l) => console.log('Edit locality:', l)}
+                onDelete={(id) => console.log('Delete locality:', id)}
+              />
 
-            {/* Trusted Domains Section */}
-            <div className="mt-8 pt-8 border-t border-border">
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold text-foreground">Trusted Domains</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Add a trusted domain to suppress detections that specifically target activity with potentially-malicious domains.
-                </p>
-              </div>
-              <Button variant="link" className="text-primary p-0 h-auto">
-                Add Domain
-              </Button>
+              {/* Trusted Domains Section */}
+              <div className="mt-8 pt-8 border-t border-border">
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-foreground">Trusted Domains</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Add a trusted domain to suppress detections that specifically target activity with potentially-malicious domains.
+                  </p>
+                </div>
+                <Button variant="link" className="text-primary p-0 h-auto">
+                  Add Domain
+                </Button>
 
-              <div className="mt-4 p-4 bg-secondary/30 rounded-lg">
-                <p className="text-sm text-muted-foreground">
-                  This console manages shared settings for <span className="text-primary">0 of 1 connected sensors</span>.
-                </p>
+                <div className="mt-4 p-4 bg-secondary/30 rounded-lg">
+                  <p className="text-sm text-muted-foreground">
+                    This console manages shared settings for <span className="text-primary">0 of 1 connected sensors</span>.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </TabsContent>
 
         {/* Trust Lists Tab */}
-        <TabsContent value="trust" className="flex-1 overflow-auto m-0 p-0">
-          <div className="max-w-6xl mx-auto p-6">
-            <TrustListsPanel
-              entries={mockTrustEntries}
-              onAdd={(e) => console.log('Add entry:', e)}
-              onEdit={(e) => console.log('Edit entry:', e)}
-              onDelete={(id) => console.log('Delete entry:', id)}
-              onToggle={(id, active) => console.log('Toggle:', id, active)}
-            />
+        <TabsContent value="trust" className="flex-1 flex flex-col overflow-hidden m-0 p-0">
+          <div className="flex-1 overflow-auto">
+            <div className="max-w-6xl mx-auto p-6">
+              <TrustListsPanel
+                entries={mockTrustEntries}
+                onAdd={(e) => console.log('Add entry:', e)}
+                onEdit={(e) => console.log('Edit entry:', e)}
+                onDelete={(id) => console.log('Delete entry:', id)}
+                onToggle={(id, active) => console.log('Toggle:', id, active)}
+              />
+            </div>
           </div>
         </TabsContent>
       </Tabs>
